@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>リベ チャット フォルダー｜使い方</title>
+<meta name="description" content="リベシティのチャット一覧をフォルダー分け・並び替えし、フォルダーごとの通知の合計を出す無料のツール(Tampermonkey 用)。">
+<link rel="icon" href="icon128.png">
+<style>
+  :root { --blue: #2b7de9; --ink: #26303d; --sub: #5d6878; --line: #e3e8ef; --bg: #f6f8fb; --green: #16a34a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.8; }
+  header { background: #fff; border-bottom: 1px solid var(--line); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+  .hero { display: flex; gap: 20px; align-items: center; padding: 32px 0 26px; }
+  .hero img { width: 88px; height: 88px; flex: none; }
+  h1 { font-size: 26px; margin: 0 0 4px; line-height: 1.4; }
+  .lead { margin: 0; color: var(--sub); }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 0 18px; }
+  nav a { font-size: 13px; padding: 4px 12px; border-radius: 14px; background: var(--bg); color: var(--ink); text-decoration: none; border: 1px solid var(--line); }
+  nav a:hover { border-color: var(--blue); color: var(--blue); }
+  section { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; margin: 20px 0; }
+  h2 { font-size: 20px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  h3 { font-size: 16px; margin: 22px 0 6px; }
+  .points { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .points li { background: var(--bg); border-radius: 10px; padding: 12px 14px; }
+  .points b { display: block; font-size: 15px; }
+  ol.steps { padding-left: 0; list-style: none; counter-reset: s; margin: 0; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 0 0 18px 44px; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; font-weight: 700; display: grid; place-items: center; }
+  .btn { display: inline-block; background: var(--green); color: #fff; font-weight: 700; padding: 10px 22px; border-radius: 10px; text-decoration: none; margin: 4px 0; }
+  .btn.blue { background: var(--blue); }
+  .shot { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+  .shot img { width: 300px; max-width: 100%; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+  .shot img.wide { width: 560px; }
+  .shot .txt { flex: 1 1 260px; min-width: 0; }
+  .badge { display: inline-block; border-radius: 10px; padding: 0 8px; font-size: 12px; color: #fff; font-weight: 700; }
+  .red { background: #e5484d; } .orange { background: #e59500; }
+  .note { background: #fff8e6; border: 1px solid #f3d999; border-radius: 10px; padding: 10px 14px; font-size: 14px; }
+  code { background: var(--bg); padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  td, th { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--bg); width: 34%; }
+  footer { color: var(--sub); font-size: 12px; text-align: center; padding: 20px 0 40px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="hero">
+      <img src="icon128.png" alt="">
+      <div>
+        <h1>リベ チャット フォルダー</h1>
+        <p class="lead">リベシティの「参加チャット」を、フォルダーに分けて好きな順に並べられる無料のツールです。</p>
+      </div>
+    </div>
+    <nav>
+      <a href="#dekiru">できること</a><a href="#ireru">入れ方</a><a href="#tsukau">使い方</a>
+      <a href="#calendar">カレンダー登録</a><a href="#hikkoshi">引っ越し・やめ方</a><a href="#qa">困った時</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="dekiru">
+    <h2>✨ できること</h2>
+    <ul class="points">
+      <li><b>📁 フォルダー分け</b>「AI関係」「地元」「学長・運営」のように、チャットをまとめて置けます</li>
+      <li><b>↕ 好きな順に並べる</b>つかんで動かすだけ。フォルダーの順番も入れ替えられます</li>
+      <li><b>🔔 通知の合計が見える</b>フォルダーを閉じていても、中のチャットの通知の数が見出しに出ます</li>
+      <li><b>📅 カレンダーに登録</b>告知の文字を選ぶと、日時を拾ってGoogleカレンダーに入れられます</li>
+    </ul>
+  </section>
+
+  <section id="ireru">
+    <h2>🧩 入れ方(5分)</h2>
+    <p>Chrome の拡張機能「Tampermonkey(タンパーモンキー)」の上で動きます。パソコンの Chrome で進めてください。</p>
+    <ol class="steps">
+      <li><b>Tampermonkey を入れる</b><br>
+        <a class="btn blue" href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" target="_blank" rel="noopener">Chrome ウェブストアの Tampermonkey を開く</a><br>
+        「Chrome に追加」を押します。もう入っている人は次へ。</li>
+      <li><b>Tampermonkey に「ユーザースクリプト」を許可する</b><br>
+        Chrome のアドレス欄に <code>chrome://extensions</code> と入れて開き、Tampermonkey の「詳細」を押します。
+        「ユーザー スクリプトを許可する」をオンにします。<br>
+        <span class="note">この項目が無い古い Chrome の場合は、右上の「デベロッパー モード」をオンにします。</span></li>
+      <li><b>このツールを入れる</b><br>
+        <a class="btn" href="https://raw.githubusercontent.com/yubokumin28/libe-chat-folder/main/libe-chat-folder.user.js">リベ チャット フォルダーをインストール</a><br>
+        Tampermonkey の画面が開くので「インストール」を押します。</li>
+      <li><b>リベシティを開き直す</b><br>
+        「参加チャット」の一覧の上に、青い「＋ フォルダーを作る」が出たら完了です。</li>
+    </ol>
+    <p class="note">新しい版は Tampermonkey が自動で取りに来ます。作ったフォルダーは更新しても消えません。</p>
+  </section>
+
+  <section id="tsukau">
+    <h2>📁 使い方</h2>
+
+    <h3>フォルダーを作って、チャットを入れる</h3>
+    <div class="shot">
+      <img src="img/move.png" alt="📁を押すとフォルダーの一覧が出る">
+      <div class="txt">
+        <p>① 一覧の上の「<b>＋ フォルダーを作る</b>」を押して、名前を入れます。</p>
+        <p>② チャットにマウスを乗せると、左下に <b>📁</b> が出ます。押すと、どのフォルダーに入れるか選べます。</p>
+        <p>チャットをつかんで、フォルダーの見出しへ運んでも入ります。</p>
+      </div>
+    </div>
+
+    <h3>好きな順に並べる</h3>
+    <div class="shot">
+      <img src="img/drag.png" alt="青い線の所に入る">
+      <div class="txt">
+        <p>チャットをつかんで動かすと、入る場所に<b>青い線</b>が出ます。チャットの上半分で離すとその上、下半分で離すとその下に入ります。</p>
+        <p>フォルダーの見出しをつかめば、フォルダーごと順番を入れ替えられます。</p>
+        <p>「フォルダーなし」も好きな順に並べられます。リベシティの並び(新着順)に戻したい時は、その見出しの「✏️ 編集」から戻せます。</p>
+      </div>
+    </div>
+
+    <h3>通知の見方</h3>
+    <div class="shot">
+      <img src="img/folders.png" alt="フォルダーの見出しに通知の合計が出る">
+      <div class="txt">
+        <p>見出しを押すと、フォルダーを開いたり閉じたりできます。<b>閉じていても</b>、中のチャットの通知が見出しに出ます。</p>
+        <table>
+          <tr><th><span class="badge red">通知 16</span></th><td>自分あての通知の合計(チャットに出る数字を足したもの)</td></tr>
+          <tr><th><span class="badge orange">全体 2</span></th><td>@ALL の全体通知(オレンジの点)が来ているチャットの数</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3>名前・アイコンを変える、フォルダーを消す</h3>
+    <div class="shot">
+      <img src="img/edit.png" alt="編集のメニュー">
+      <img src="img/icon.png" alt="アイコンを選ぶ画面">
+      <div class="txt">
+        <p>見出しの「<b>✏️ 編集</b>」から、名前を変える・アイコンを変える・フォルダーを消す、が選べます。</p>
+        <p>見出しのアイコンを直接押しても選べます。一覧に無い絵文字は、上の入力欄に入れて Enter。Windows なら「Windowsキー + .(ピリオド)」で絵文字の一覧が出ます。</p>
+        <p>フォルダーを消しても、中のチャットは「フォルダーなし」に戻るだけで、チャット自体は消えません。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="calendar">
+    <h2>📅 Googleカレンダーに登録</h2>
+    <div class="shot">
+      <img class="wide" src="img/calendar.png" alt="文字を選ぶとカレンダーに登録のボタンが出る">
+      <div class="txt">
+        <p>告知の文字をマウスでなぞって選ぶと、すぐ下に「<b>📅 Googleカレンダーに登録</b>」が出ます。押すと、日時と場所を書き込んだ予定の作成画面が開くので、確かめて「保存」を押してください。</p>
+        <p>入るのは、その Chrome でログインしている自分の Google カレンダーです。このツールが予定を勝手に入れることはありません。</p>
+        <p>読める書き方の例: <code>11/7(土) 8:00〜9:00</code> <code>2026年12月5日 午後3時から5時</code> <code>(火)20:00〜</code> <code>明日 21時半</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="hikkoshi">
+    <h2>🚚 引っ越し・やめ方</h2>
+    <div class="shot">
+      <img src="img/settings.png" alt="⚙のメニュー">
+      <div class="txt">
+        <p><b>別のパソコンへ移す</b>: 一覧の上の「⚙」→「📤 書き出す」でコピーし、移す先の「⚙」→「📥 読み込む」に貼り付けます。</p>
+        <p><b>一度外して、また入れた時</b>: フォルダー・名前・アイコン・並び順は、そのまま戻ります(リベシティのページ側にも控えを置いています)。</p>
+        <p><b>全部消したい時</b>: 「⚙」→「🗑️ フォルダー分けを全部消す」。</p>
+        <p><b>やめる時</b>: Tampermonkey のメニューで、このツールをオフにするか削除します。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="qa">
+    <h2>🙋 困った時</h2>
+    <table>
+      <tr><th>「＋ フォルダーを作る」が出ない</th><td>入れ方の②「ユーザー スクリプトを許可する」がオンか確かめて、リベシティを開き直してください。</td></tr>
+      <tr><th>フォルダーに「あと◯件は未読み込み」と出る</th><td>一覧の下の「さらに読み込む」をまだ押していない分です。ツールが自動で押すので、少し待つと揃います。</td></tr>
+      <tr><th>カレンダーの日時が違う</th><td>作成画面で直してから保存してください。日付が無い文字は、今日の終日の予定として開きます。</td></tr>
+    </table>
+  </section>
+</main>
+<footer>リベ チャット フォルダー｜作: 遊牧民｜リベシティ公式のツールではありません</footer>
+</body>
+</html>
