@@ -41,6 +41,9 @@
   table { border-collapse: collapse; width: 100%; font-size: 14px; }
   td, th { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
   th { background: var(--bg); width: 34%; }
+  .art { display: block; width: 100%; height: auto; border-radius: 12px; margin: 0 0 16px; }
+  .art.top { margin: 20px 0 0; }
+  img.allow { width: 380px; max-width: 100%; border: 1px solid var(--line); border-radius: 10px; margin: 8px 0 4px; }
   footer { color: var(--sub); font-size: 12px; text-align: center; padding: 20px 0 40px; }
 </style>
 </head>
@@ -62,6 +65,7 @@
 </header>
 
 <main class="wrap">
+  <img class="art top" src="img/art_top.jpg" alt="参加チャットが一瞬で見つかる。チャットがフォルダーに吸い込まれていく絵">
   <section id="dekiru">
     <h2>✨ できること</h2>
     <ul class="points">
@@ -74,6 +78,7 @@
 
   <section id="ireru">
     <h2>🧩 入れ方(5分)</h2>
+    <img class="art" src="img/art_flow.jpg" alt="入れる・許可・インストール・開き直すの4手で5分">
     <p>Chrome の拡張機能「Tampermonkey(タンパーモンキー)」の上で動きます。パソコンの Chrome で進めてください。</p>
     <ol class="steps">
       <li><b>Tampermonkey を入れる</b><br>
@@ -82,6 +87,7 @@
       <li><b>Tampermonkey に「ユーザースクリプト」を許可する</b><br>
         Chrome のアドレス欄に <code>chrome://extensions</code> と入れて開き、Tampermonkey の「詳細」を押します。
         「ユーザー スクリプトを許可する」をオンにします。<br>
+        <img class="allow" src="img/allow.jpg" alt="Tampermonkey の詳細画面。ユーザー スクリプトを許可するのスイッチを赤丸で示す"><br>
         <span class="note">この項目が無い古い Chrome の場合は、右上の「デベロッパー モード」をオンにします。</span></li>
       <li><b>このツールを入れる</b><br>
         <a class="btn" href="https://raw.githubusercontent.com/yubokumin28/libe-chat-folder/main/libe-chat-folder.user.js">リベ チャット フォルダーをインストール</a><br>
@@ -166,6 +172,7 @@
 
   <section id="qa">
     <h2>🙋 困った時</h2>
+    <img class="art" src="img/art_tsumari.jpg" alt="よくある詰まりどころは、許可のし忘れと2つ入れたこと">
     <table>
       <tr><th>「＋ フォルダーを作る」が出ない</th><td>入れ方の②「ユーザー スクリプトを許可する」がオンか確かめて、リベシティを開き直してください。</td></tr>
       <tr><th>フォルダーに「あと◯件は未読み込み」と出る</th><td>一覧の下の「さらに読み込む」をまだ押していない分です。ツールが自動で押すので、少し待つと揃います。</td></tr>
