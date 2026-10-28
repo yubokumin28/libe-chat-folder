@@ -43,6 +43,7 @@
   th { background: var(--bg); width: 34%; }
   .art { display: block; width: 100%; height: auto; border-radius: 12px; margin: 0 0 16px; }
   .art.top { margin: 20px 0 0; }
+  img.allow.wide { width: 640px; }
   img.allow { width: 380px; max-width: 100%; border: 1px solid var(--line); border-radius: 10px; margin: 8px 0 4px; }
   footer { color: var(--sub); font-size: 12px; text-align: center; padding: 20px 0 40px; }
 </style>
@@ -68,6 +69,7 @@
   <img class="art top" src="img/art_top.jpg" alt="参加チャットが一瞬で見つかる。チャットがフォルダーに吸い込まれていく絵">
   <section id="dekiru">
     <h2>✨ できること</h2>
+    <img class="art" src="img/art_dekiru.jpg" alt="できることは4つ。フォルダー分け・好きな順に並べる・通知の合計・カレンダー登録">
     <ul class="points">
       <li><b>📁 フォルダー分け</b>「AI関係」「地元」「学長・運営」のように、チャットをまとめて置けます</li>
       <li><b>↕ 好きな順に並べる</b>つかんで動かすだけ。フォルダーの順番も入れ替えられます</li>
@@ -79,13 +81,16 @@
   <section id="ireru">
     <h2>🧩 入れ方(5分)</h2>
     <img class="art" src="img/art_flow.jpg" alt="入れる・許可・インストール・開き直すの4手で5分">
-    <p>Chrome の拡張機能「Tampermonkey(タンパーモンキー)」の上で動きます。パソコンの Chrome で進めてください。</p>
+    <p>Chrome の拡張機能「🐒 Tampermonkey(タンパーモンキー)」の上で動きます。パソコンの Chrome で進めてください。</p>
     <ol class="steps">
-      <li><b>Tampermonkey を入れる</b><br>
+      <li><b>🐒 Tampermonkey を入れる</b><br>
+        Chrome ウェブストアは、Chrome に機能を足す「拡張機能」を配っている Google の公式のお店です。<br>
         <a class="btn blue" href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" target="_blank" rel="noopener">Chrome ウェブストアの Tampermonkey を開く</a><br>
-        「Chrome に追加」を押します。もう入っている人は次へ。</li>
+        右上の青い「Chrome に追加」→「拡張機能を追加」を押します。もう入っている人は「Chrome から削除」と出ているので、次へ。<br>
+        <img class="allow wide" src="img/store.jpg" alt="Chrome ウェブストアの Tampermonkey のページ。右上の青いボタンを赤丸で示す"></li>
       <li><b>Tampermonkey に「ユーザースクリプト」を許可する</b><br>
-        Chrome のアドレス欄に <code>chrome://extensions</code> と入れて開き、Tampermonkey の「詳細」を押します。
+        Chrome のアドレス欄(画面の一番上の、URL が出ている所)に <code>chrome://extensions</code> と打って Enter。拡張機能の一覧で、Tampermonkey の「詳細」を押します。<br>
+        <img class="allow wide" src="img/ext_detail.jpg" alt="拡張機能の一覧。Tampermonkey の詳細ボタンを赤丸で示す"><br>
         「ユーザー スクリプトを許可する」をオンにします。<br>
         <img class="allow" src="img/allow.jpg" alt="Tampermonkey の詳細画面。ユーザー スクリプトを許可するのスイッチを赤丸で示す"><br>
         <span class="note">この項目が無い古い Chrome の場合は、右上の「デベロッパー モード」をオンにします。</span></li>
@@ -93,7 +98,7 @@
         <a class="btn" href="https://raw.githubusercontent.com/yubokumin28/libe-chat-folder/main/libe-chat-folder.user.js">リベ チャット フォルダーをインストール</a><br>
         Tampermonkey の画面が開くので「インストール」を押します。</li>
       <li><b>リベシティを開き直す</b><br>
-        「参加チャット」の一覧の上に、青い「＋ フォルダーを作る」が出たら完了です。</li>
+        リベシティをもう一度開くか、ブラウザの更新ボタン(アドレス欄の左の ↻。キーボードなら F5)を押します。「参加チャット」の一覧の上に、青い「＋ フォルダーを作る」が出たら完了です。</li>
     </ol>
     <p class="note">新しい版は Tampermonkey が自動で取りに来ます。作ったフォルダーは更新しても消えません。</p>
   </section>
@@ -174,7 +179,9 @@
     <h2>🙋 困った時</h2>
     <img class="art" src="img/art_tsumari.jpg" alt="よくある詰まりどころは、許可のし忘れと2つ入れたこと">
     <table>
-      <tr><th>「＋ フォルダーを作る」が出ない</th><td>入れ方の②「ユーザー スクリプトを許可する」がオンか確かめて、リベシティを開き直してください。</td></tr>
+      <tr><th>「＋ フォルダーを作る」が出ない</th><td>入れ方の②「ユーザー スクリプトを許可する」がオンか確かめて、リベシティの画面でブラウザの更新ボタン(↻)を押してください。</td></tr>
+      <tr><th>急に動かない・表示がおかしい</th><td>① <code>chrome://extensions</code> を開き、右上の「デベロッパー モード」をオン → 左上の「更新」を押す(拡張機能が新しい版に入れ替わります) ② リベシティに戻ってブラウザの更新ボタン(↻)を押す。<br>
+        <img class="allow wide" src="img/ext_update.jpg" alt="拡張機能の一覧の上。左上の更新ボタンと右上のデベロッパーモードを赤丸で示す"></td></tr>
       <tr><th>フォルダーに「あと◯件は未読み込み」と出る</th><td>一覧の下の「さらに読み込む」をまだ押していない分です。ツールが自動で押すので、少し待つと揃います。</td></tr>
       <tr><th>カレンダーの日時が違う</th><td>作成画面で直してから保存してください。日付が無い文字は、今日の終日の予定として開きます。</td></tr>
     </table>
