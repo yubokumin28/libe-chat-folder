@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         リベ チャット フォルダー
 // @namespace    https://github.com/yubokumin28/libe-chat-folder
-// @version      0.4.0
+// @version      0.4.1
 // @description  リベシティのチャット一覧をフォルダー分け・並び替えし、フォルダーごとの通知の合計を出します。選んだ文字をGoogleカレンダーに登録できます。
 // @author       遊牧民
 // @match        https://libecity.com/*
@@ -25,6 +25,10 @@ GM_addStyle(`/* リベ チャット フォルダー: 並びは order で決め�
 .content_chatlist[data-lcf] > * { flex-shrink: 0; }
 .content_chatlist[data-lcf] > .chat_item { position: relative; }
 .content_chatlist[data-lcf] > .chat_item[data-lcf-hidden] { display: none !important; }
+/* まだ振り分けていないチャットと「読み込み中」の印は一番下へ。order が無いと一番上に出て、
+   開くたびに一覧が跳ねて見えた(2026-10-29 本物で実測: 読み込みのたびに40件が上に一瞬出ていた) */
+.content_chatlist[data-lcf] > .chat_item:not([data-lcf-fid]),
+.content_chatlist[data-lcf] > .loading { order: 99999998; }
 .content_chatlist[data-lcf] > .chat_item[data-lcf-dragging],
 .content_chatlist[data-lcf] > .lcf-head[data-lcf-dragging] { opacity: .45; }
 
@@ -532,7 +536,7 @@ const chrome = {
     setTimeout(() => {
       loadBusy = false;
       if (a.isConnected) { loadClicks++; a.click(); }
-    }, 700);
+    }, 250);
   }
 
   function applyAll() {
@@ -883,7 +887,9 @@ const chrome = {
       const nodes = [...m.addedNodes, ...m.removedNodes];
       if (m.type === 'childList' && nodes.length && nodes.every(isOurs)) continue;
       if (t.closest(LIST) || nodes.some(n => n.nodeType === 1 && (n.matches(LIST) || n.querySelector?.(LIST)))) {
-        schedule();
+        // 読み込み済みならその場で並べる(画面に描かれる前)。待つと元の並びが一瞬見えて跳ねる
+        if (ready) { clearTimeout(timer); applyAll(); }
+        else schedule();
         return;
       }
     }
@@ -899,7 +905,27 @@ const chrome = {
 (() => {
   if (document.documentElement.dataset.lcfRunning !== 'userscript') return;
   let btn = null;
-  const hide = () => { if (btn) { btn.remove(); btn = null; } };
+  let range = null; // ボタンを出した時の選択範囲(スクロールしたら、ここに付いていく)
+  let before = null; // 押す直前の選択(押しても選択が変わらなかった時は出さない)
+  const hide = () => { if (btn) { btn.remove(); btn = null; range = null; } };
+  const keyOf = s => {
+    if (!s || !s.rangeCount) return null;
+    const r = s.getRangeAt(0);
+    return [r.startContainer, r.startOffset, r.endContainer, r.endOffset];
+  };
+
+  // 選んだ文字のすぐ下に置く。文字が画面の外へ出たり、ページが描き変わって文字が消えたら隠す
+  function place() {
+    if (!btn || !range) return;
+    if (!range.startContainer.isConnected) return hide();
+    const r = range.getBoundingClientRect();
+    if (!r.width && !r.height) return hide();
+    if (r.bottom < 0 || r.top > innerHeight) return hide();
+    const top = Math.min(r.bottom + 8, innerHeight - btn.offsetHeight - 8);
+    const left = Math.max(8, Math.min(r.left, innerWidth - btn.offsetWidth - 8));
+    btn.style.top = `${top}px`;
+    btn.style.left = `${left}px`;
+  }
 
   document.addEventListener('mouseup', e => {
     if (e.button !== 0 || e.target.closest?.('.lcf-cal')) return;
@@ -907,10 +933,13 @@ const chrome = {
       const sel = getSelection();
       const text = String(sel || '').trim();
       if (!sel || !sel.rangeCount || text.length < 2) return hide();
+      // チャットの一覧などを押しただけで前の選択が残っている時は出さない(前は関係ない所にボタンが出た)
+      const now = keyOf(sel);
+      if (before && now && now.every((v, i) => v === before[i])) return hide();
       const node = sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
       if (node && node.closest('input, textarea, [contenteditable="true"], .lcf-menu')) return hide(); // 書いている途中は出さない
-      const r = sel.getRangeAt(sel.rangeCount - 1).getBoundingClientRect();
       hide();
+      range = sel.getRangeAt(sel.rangeCount - 1).cloneRange();
       btn = document.createElement('button');
       btn.className = 'lcf-cal';
       btn.type = 'button';
@@ -923,14 +952,20 @@ const chrome = {
         hide();
       });
       document.body.append(btn);
-      const top = Math.min(r.bottom + 8, innerHeight - btn.offsetHeight - 8);
-      const left = Math.max(8, Math.min(r.left, innerWidth - btn.offsetWidth - 8));
-      btn.style.top = `${top}px`;
-      btn.style.left = `${left}px`;
+      place();
     }, 10);
   });
-  document.addEventListener('mousedown', e => { if (!e.target.closest?.('.lcf-cal')) hide(); }, true);
-  addEventListener('scroll', hide, true);
+  document.addEventListener('mousedown', e => {
+    if (e.target.closest?.('.lcf-cal')) return;
+    before = keyOf(getSelection());
+    hide();
+  }, true);
+  // スクロールでは消さずに付いていく(2026-10-29: 前はどこかが少しでもスクロールすると消えていた。
+  // 会話の多いチャットは新しい発言や表示の変化で勝手に動くので、押す前に消えることがあった)
+  let raf = 0;
+  const follow = () => { if (btn && !raf) raf = requestAnimationFrame(() => { raf = 0; place(); }); };
+  addEventListener('scroll', follow, true);
+  addEventListener('resize', follow);
   addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
 
   // 入れて最初の1回だけ、使い方のページを開く
